@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Livres</title>
+    <link rel="stylesheet" href="bookstyle.css">
+</head>
+<body>
+<h1>Liste des Livres</h1>
+<div id="book-list"></div>
+
+<h2>Ajouter / Modifier un Livre</h2>
+<form id="book-form">
+    <input type="hidden" id="book-id">
+    <input type="text" id="title" placeholder="Titre" required>
+    <input type="text" id="author" placeholder="Auteur" required>
+    <button type="submit">Enregistrer</button>
+</form>
+
+<button class="admin-only" onclick="adminManageBooks()">Gestion Admin</button>
+
+<button id="logout">Déconnexion</button>
+<script src="scriptbooks.js"></script>
+</body>
+</html>
