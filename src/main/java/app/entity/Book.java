@@ -1,14 +1,12 @@
 package app.entity;
 
-import app.entity.User;
-
 public class Book {
     private int id;
     private String title;
     private String author;
-    private User owner; // L'utilisateur qui a posté le livre
+    private String owner; // L'utilisateur qui a posté le livre
 
-    public Book(int id, String title, String author, User owner) {
+    public Book(int id, String title, String author, String owner) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -40,11 +38,11 @@ public class Book {
         this.author = author;
     }
 
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
@@ -54,7 +52,7 @@ public class Book {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
-                ", owner=" + owner.getName() +
+                ", owner=" + owner +
                 '}';
     }
 }

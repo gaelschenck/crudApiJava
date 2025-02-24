@@ -11,7 +11,7 @@ import java.util.List;
 
 public class BookController {
 
-    // 📌 Récupérer tous les livres
+    // Récupérer tous les livres
     public static void getAllBooks(Context ctx) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sql = "SELECT * FROM books";
@@ -25,10 +25,7 @@ public class BookController {
                 String author = rs.getString("author");
                 String userName = rs.getString("user_name"); // Récupération du propriétaire sous forme de nom
 
-                // 🔍 Récupérer l'utilisateur à partir de son nom
-                User owner = getUserByName(conn, userName);
-
-                books.add(new Book(id, title, author, owner));
+                books.add(new Book(id, title, author, userName));
             }
             ctx.json(books);
         } catch (SQLException e) {
@@ -36,7 +33,7 @@ public class BookController {
         }
     }
 
-    // 📌 Fonction pour récupérer un utilisateur par son email
+    // Fonction pour récupérer un utilisateur par son email
     private static User getUserByName(Connection conn, String name) throws SQLException {
         String sql = "SELECT * FROM users WHERE name = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
@@ -49,7 +46,7 @@ public class BookController {
         return null; // Si l'utilisateur n'existe pas
     }
 
-    // 📌 Récupérer un livre par ID
+    // Récupérer un livre par ID
     public static void getBookById(Context ctx) {
         int id = Integer.parseInt(ctx.pathParam("id"));
         try (Connection conn = DatabaseConnection.getConnection()) {
@@ -64,9 +61,7 @@ public class BookController {
                 String author = rs.getString("author");
                 String userName = rs.getString("user_name"); // Récupération du propriétaire
 
-                // 🔍 Récupérer l'utilisateur à partir de son nom
-                User owner = getUserByName(conn, userName);
-                Book book = new Book(bookId, title, author, owner);
+                Book book = new Book(bookId, title, author, userName);
                 ctx.json(book);
             } else {
                 ctx.status(404).json("{\"message\": \"Livre introuvable\"}");
@@ -76,7 +71,7 @@ public class BookController {
         }
     }
 
-    // 📌 Ajouter un livre (seulement pour utilisateurs connectés)
+    // Ajouter un livre (seulement pour utilisateurs connectés)
     public static void createBook(Context ctx) {
         String userName = ctx.attribute("userName");
         if (userName == null) {
@@ -101,7 +96,7 @@ public class BookController {
         }
     }
 
-    // 📌 Modifier un livre (seulement si l’utilisateur est le propriétaire)
+    // Modifier un livre (seulement si l’utilisateur est le propriétaire)
     public static void updateBook(Context ctx) {
         int id = Integer.parseInt(ctx.pathParam("id"));
         String userName = ctx.attribute("userName");
@@ -127,7 +122,7 @@ public class BookController {
         }
     }
 
-    // 📌 Supprimer un livre (seulement si l’utilisateur est le propriétaire)
+    // Supprimer un livre (seulement si l’utilisateur est le propriétaire)
     public static void deleteBook(Context ctx) {
         int id = Integer.parseInt(ctx.pathParam("id"));
         String userName = ctx.attribute("userName");

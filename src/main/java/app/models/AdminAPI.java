@@ -13,7 +13,7 @@ public class AdminAPI {
     private static List<Book> books = new ArrayList<>();
     private static int bookIdCounter = 1; // Auto-incrémentation des IDs
 
-    // GET /admin/books -> Retourne tous les livres
+    // GET /admin/books → Retourne tous les livres
     public static List<Book> getAllBooksAdmin(User admin) {
         if (admin.getRole() != Role.ADMIN) return null;
         return books;
@@ -26,8 +26,8 @@ public class AdminAPI {
         return book.map(Book::toString).orElse("Livre non trouvé.");
     }
 
-    // POST /admin/books -> Ajoute un livre au nom de quelqu’un
-    public static String addBookAdmin(User admin, User owner, String title, String author) {
+    // POST /admin/books → Ajoute un livre au nom de quelqu’un
+    public static String addBookAdmin(User admin, String owner, String title, String author) {
         if (admin.getRole() != Role.ADMIN) return "Accès refusé.";
         Book newBook = new Book(bookIdCounter++, title, author, owner);
         books.add(newBook);
@@ -62,20 +62,20 @@ public class AdminAPI {
     private static List<User> users = new ArrayList<>();
     private static int userIdCounter = 1; // Auto-incrémentation des IDs
 
-    // GET /admin/users -> Retourne tous les utilisateurs
+    // GET /admin/users → Retourne tous les utilisateurs
     public static List<User> getAllUsersAdmin(User admin) {
         if (admin.getRole() != Role.ADMIN) return null;
         return users;
     }
 
-    // GET /admin/users/{id} -> Retourne un utilisateur par son ID
+    // GET /admin/users/{id} → Retourne un utilisateur par son ID
     public static String getUserByIdAdmin(User admin, int id) {
         if (admin.getRole() != Role.ADMIN) return "Accès refusé.";
         Optional<User> user = users.stream().filter(u -> u.getId() == id).findFirst();
         return user.map(User::toString).orElse("Utilisateur non trouvé.");
     }
 
-    // POST /admin/users -> Ajoute un utilisateur
+    // POST /admin/users → Ajoute un utilisateur
     public static String addUserAdmin(User admin, String name, String email, String password, Role role) {
         if (admin.getRole() != Role.ADMIN) return "Accès refusé.";
         User newUser = new User(userIdCounter++, name, email, password, role);
@@ -83,7 +83,7 @@ public class AdminAPI {
         return "Utilisateur ajouté par admin : " + newUser;
     }
 
-    // PUT /admin/users/{id} -> Modifier un utilisateur
+    // PUT /admin/users/{id} → Modifier un utilisateur
     public static String updateUserAdmin(User admin, int userId, String newName, String newEmail, Role newRole) {
         if (admin.getRole() != Role.ADMIN) return "Accès refusé.";
         for (User user : users) {
@@ -97,7 +97,7 @@ public class AdminAPI {
         return "Utilisateur non trouvé.";
     }
 
-    // DELETE /admin/users/{id} -> Supprimer un utilisateur
+    // DELETE /admin/users/{id} → Supprimer un utilisateur
     public static String deleteUserAdmin(User admin, int userId) {
         if (admin.getRole() != Role.ADMIN) return "Accès refusé.";
         for (User user : users) {

@@ -25,7 +25,7 @@ public class AuthMiddleware implements Handler {
             DecodedJWT decodedJWT = verifier.verify(token);
 
             ctx.attribute("userEmail", decodedJWT.getSubject()); // Stocke l'email de l'utilisateur dans la requête
-            ctx.next(); // Continue vers la route demandée
+            ctx.req(); // Continue vers la route demandée
         } catch (Exception e) {
             ctx.status(401).json("{\"message\": \"Token invalide\"}");
         }

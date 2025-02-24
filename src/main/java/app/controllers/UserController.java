@@ -4,9 +4,11 @@ import app.dbo.DatabaseConnection;
 import io.javalin.http.Context;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import java.sql.Connection;
+import java.util.Map;
 
 public class UserController {
     public static void getAllUsers(Context ctx) {

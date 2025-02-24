@@ -18,11 +18,11 @@ public class UserDAO {
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, hashedPassword);
-            stmt.setString(4, user.getRole().name());
+            stmt.setString(4,
+                    user.getRole().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            e.printStackTrace();        }
     }
 
     public User authenticateUser(String email, String password) {
@@ -49,7 +49,7 @@ public class UserDAO {
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getPassword());
-            stmt.setString(4, user.getRole().name());
+            stmt.setString(4, user.getRole().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
