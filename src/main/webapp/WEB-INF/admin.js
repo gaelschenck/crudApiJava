@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 📌 Charger les utilisateurs
     async function loadUsers() {
-        const response = await fetch("http://localhost:5000/api/users", {
+        const response = await fetch("http://localhost:5000/api/admin/users", {
             headers: { "Authorization": "Bearer " + token }
         });
         const users = await response.json();
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 📌 Charger les livres
     async function loadBooks() {
-        const response = await fetch("http://localhost:5000/api/books", {
+        const response = await fetch("http://localhost:5000/api/admin/books", {
             headers: { "Authorization": "Bearer " + token }
         });
         const books = await response.json();
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 📌 Supprimer un utilisateur
     window.deleteUser = async (id) => {
-        await fetch(`http://localhost:5000/api/users/${id}`, {
+        await fetch("http://localhost:5000/api/admin/users/${id}", {
             method: "DELETE",
             headers: { "Authorization": "Bearer " + token }
         });
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 📌 Supprimer un livre
     window.deleteBook = async (id) => {
-        await fetch(`http://localhost:5000/api/books/${id}`, {
+        await fetch("http://localhost:5000/api/admin/books/${id}", {
             method: "DELETE",
             headers: { "Authorization": "Bearer " + token }
         });

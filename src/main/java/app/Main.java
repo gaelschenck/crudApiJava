@@ -6,12 +6,15 @@ import app.controllers.DashboardController;
 import app.controllers.AdminController;
 import app.dbo.AuthMiddleware;
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
 
 import java.sql.*;
 
 public class Main {
     public static void main(String[] args) {
-        Javalin app = Javalin.create().start(5000);
+        Javalin app = Javalin.create(config -> {
+            config.staticFiles.add("./src/main/webapp", Location.EXTERNAL);
+        }).start(5000);
 
         app.before("/api/", new AuthMiddleware());
 
