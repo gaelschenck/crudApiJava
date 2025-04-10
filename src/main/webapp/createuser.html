@@ -37,9 +37,22 @@
           },
           body: JSON.stringify(formData)
       })
-      .then(response => response.json())
-      .then(data => alert(data.message))
-      .catch(error => console.error("Erreur :", error));
+      .then(response => {
+            if (response.status === 201) {
+                alert("Utilisateur créé avec succès !");
+                window.location.href = "index.html"; // Redirige vers la page d'accueil
+            } else {
+                return response.json();
+            }
+        })
+        .then(data => {
+            if (data && data.message) {
+                alert("Erreur : " + data.message);
+            }
+        })
+        .catch(error => console.error("Erreur :", error));
+    }
+
   }
 </script>
 

@@ -21,8 +21,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.message);
 
+                // Stocker le token et le rôle dans localStorage
                 localStorage.setItem("token", data.token);
-                window.location.href = "dashboard.html";
+                localStorage.setItem("role", data.role);
+
+                // Redirection en fonction du rôle utilisateur
+                if (data.role === "USER") {
+                    window.location.href = "dashboardUser.html";
+                } else if (data.role === "ADMIN") {
+                    window.location.href = "dashboardAdmin.html";
+                }
             } catch (error) {
                 errorMessage.textContent = error.message;
             }
@@ -30,42 +38,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Affichage des infos sur le dashboard
-   if (userInfo) {
-           const token = localStorage.getItem("token");
-           if (!token) {
-               window.location.href = "index.html";
-           } else {
-               try {
-                   const response = await fetch("http://localhost:5000/api/dashboard", {
-                       method: "GET",
-                       headers: { "Authorization": "Bearer " + token }
-                   });
-                   const data = await response.json();
-                   userInfo.textContent = data.message;
-               } catch (error) {
-                   window.location.href = "index.html";
-               }
-           }
-       }
+    if (userInfo) {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            window.location.href = "index.html";
+        } else {
+            try {
+                const response = await fetch("http://localhost:5000/api/dashboard", {
+                    method: "GET",
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await response.json();
+                userInfo.textContent = data.message;
+            } catch (error) {
+                window.location.href = "index.html";
+            }
+        }
+    }
 
-       if (logoutBtn) {
-           logoutBtn.addEventListener("click", () => {
-               localStorage.removeItem("token");
-               window.location.href = "index.html";
-           });
-       }
-   });
+    // Gestion de la déconnexion
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            window.location.href = "index.html";
+        });
+    }
+});
 
-   document.addEventListener("DOMContentLoaded", async () => {
-       const userRole = localStorage.getItem("role");
+// Mise à jour de l'interface en fonction du rôle utilisateur
+document.addEventListener("DOMContentLoaded", () => {
+    const userRole = localStorage.getItem("role");
 
-       // Vérifier le rôle et afficher les boutons en fonction
-       function updateUI() {
-           document.querySelectorAll(".admin-only").forEach(btn => {
-               btn.style.display = userRole === "ADMIN" ? "inline-block" : "none";
-           });
-       }
+    // Vérifier le rôle et afficher les boutons en fonction
+    function updateUI() {
+        document.querySelectorAll(".admin-only").forEach(btn => {
+            btn.style.display = userRole === "ADMIN" ? "inline-block" : "none";
+        });
+    }
 
-       updateUI();
-   });
-
+    updateUI();
+});
