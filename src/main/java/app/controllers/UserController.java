@@ -1,6 +1,7 @@
 package app.controllers;
 
 import app.dbo.DatabaseConnection;
+import app.entity.User;
 import io.javalin.http.Context;
 import java.sql.*;
 import java.util.*;
@@ -8,6 +9,35 @@ import java.util.*;
 import java.sql.Connection;
 
 public class UserController {
+
+    // 📌 Créer un utilisateur avec ID et rôle
+    public static void createUser(Context ctx) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            // Lire les données envoyées dans le corps de la requête
+            User newUser = ctx.bodyAsClass(User.class);
+
+            // Préparer la requête SQL pour insérer un nouvel utilisateur
+            String sql = "INSERT INTO users (id, name, email, password, role) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, newUser.getId()); // ID fourni par le client
+            stmt.setString(2, newUser.getName());
+            stmt.setString(3, newUser.getEmail());
+            stmt.setString(4, newUser.getPassword()); // ⚠️ Hacher le mot de passe dans une vraie application !
+            stmt.setString(5, newUser.getRole().name()); // Convertir l'enum en chaîne de caractères
+
+            // Exécuter la requête
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                ctx.status(201).json("{\"message\": \"Utilisateur créé avec succès\"}");
+            } else {
+                ctx.status(400).json("{\"message\": \"Erreur lors de la création de l'utilisateur\"}");
+            }
+        } catch (SQLException e) {
+            ctx.status(500).json("{\"message\": \"Erreur serveur\"}");
+        }
+    }
+
+
     public static void getAllUsers(Context ctx) {
         String userRole = ctx.attribute("userRole");
 
