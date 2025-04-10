@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AdminController {
 
-    // 📌 Récupérer tous les utilisateurs
+    // Récupérer tous les utilisateurs
     public static void getAllUsers(Context ctx) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sql = "SELECT id, name, email, role FROM users";
@@ -32,7 +32,7 @@ public class AdminController {
         }
     }
 
-    // 📌 Récupérer un utilisateur par ID
+    // Récupérer un utilisateur par ID
     public static void getUserById(Context ctx) {
         int id = Integer.parseInt(ctx.pathParam("id"));
         try (Connection conn = DatabaseConnection.getConnection()) {
@@ -151,6 +151,33 @@ public class AdminController {
             if (rs.next()) {
                 Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("owner_name"));
                 ctx.json(book);
+            } else {
+                ctx.status(404).json("{\"message\": \"Livre introuvable\"}");
+            }
+        } catch (SQLException e) {
+            ctx.status(500).json("{\"message\": \"Erreur serveur\"}");
+        }
+    }
+
+    // 📌 Mettre à jour un livre
+    public static void updateBook(Context ctx) {
+        int id = Integer.parseInt(ctx.pathParam("id"));
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            // Lire les données envoyées dans le corps de la requête
+            Book updatedBook = ctx.bodyAsClass(Book.class);
+
+            // Préparer la requête SQL de mise à jour
+            String sql = "UPDATE books SET title = ?, author = ?, owner_name = ? WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, updatedBook.getTitle());
+            stmt.setString(2, updatedBook.getAuthor());
+            stmt.setString(3, updatedBook.getOwner());
+            stmt.setInt(4, id);
+
+            // Exécuter la requête et vérifier si une ligne a été mise à jour
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                ctx.json("{\"message\": \"Livre mis à jour\"}");
             } else {
                 ctx.status(404).json("{\"message\": \"Livre introuvable\"}");
             }
