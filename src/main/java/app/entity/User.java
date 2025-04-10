@@ -10,6 +10,9 @@ public class User {
     private String password;
     private Role role; // Ajout du rôle
 
+    public User() {
+        // Constructeur par défaut requis pour la désérialisation
+    }
 
 
     // Constructeur avec paramètres

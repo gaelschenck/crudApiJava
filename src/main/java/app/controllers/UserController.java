@@ -13,20 +13,35 @@ public class UserController {
     // 📌 Créer un utilisateur avec ID et rôle
     public static void createUser(Context ctx) {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            // Lire les données envoyées dans le corps de la requête
+            System.out.println("Connexion établie avec la base de données.");
             User newUser = ctx.bodyAsClass(User.class);
+            System.out.println("Données reçues : " + newUser);
 
-            // Préparer la requête SQL pour insérer un nouvel utilisateur
+            // Récupérer le plus grand ID existant dans la table
+            String idQuery = "SELECT MAX(id) AS maxId FROM users";
+            PreparedStatement idStmt = conn.prepareStatement(idQuery);
+            ResultSet idResult = idStmt.executeQuery();
+
+            int newId = 1; // Valeur par défaut si la table est vide
+            if (idResult.next()) {
+                newId = idResult.getInt("maxId") + 1; // ID le plus élevé +1
+            }
+
+            // Log SQL
             String sql = "INSERT INTO users (id, name, email, password, role) VALUES (?, ?, ?, ?, ?)";
+            System.out.println("Requête SQL : " + sql);
+
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, newUser.getId()); // ID fourni par le client
+            stmt.setInt(1, newId); // ID fourni par le client
             stmt.setString(2, newUser.getName());
             stmt.setString(3, newUser.getEmail());
             stmt.setString(4, newUser.getPassword()); // ⚠️ Hacher le mot de passe dans une vraie application !
-            stmt.setString(5, newUser.getRole().name()); // Convertir l'enum en chaîne de caractères
+            stmt.setString(5, "USER"); // Convertir l'enum en chaîne de caractères
 
             // Exécuter la requête
             int rowsInserted = stmt.executeUpdate();
+            System.out.println("Lignes insérées : " + rowsInserted);
+
             if (rowsInserted > 0) {
                 ctx.status(201).json("{\"message\": \"Utilisateur créé avec succès\"}");
             } else {
