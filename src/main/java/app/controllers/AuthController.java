@@ -16,6 +16,7 @@ public class AuthController {
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             //Récupérer l'utilisateur par email et mot de passe
+            System.out.println("Email reçu : " + email + ", Mot de passe reçu : " + password);
             User user = getUserByEmailAndPassword(conn, email, password);
 
             if (user != null) {
@@ -39,13 +40,18 @@ public class AuthController {
         ResultSet rs = stmt.executeQuery();
 
         if (rs.next()) {
+            System.out.println("Utilisateur trouvé : " + rs.getString("email"));
+
             return new User(
                     rs.getInt("id"),
                     rs.getString("name"),
                     rs.getString("email"),
                     rs.getString("role")
             );
+        }else {
+            System.out.println("Aucun utilisateur trouvé avec ces identifiants.");
         }
+
         return null;
     }
 }

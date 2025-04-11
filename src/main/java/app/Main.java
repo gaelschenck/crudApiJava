@@ -15,9 +15,9 @@ public class Main {
 
         app.before("/api/", new AuthMiddleware());
 
-        app.post("/api/login", AuthController::loginUser);
-        app.post("createUser", UserController::createUser);
-        app.get("/api/dashboard", DashboardController::getDashboard);
+        app.post("/login", AuthController::loginUser);
+        app.post("/createUser", UserController::createUser);
+        app.get("/api/dashboard", UserController::getUserProfile);
         app.get("/api/books", BookController::getAllBooks);
         app.get("/api/books/{id}", BookController::getBookById);
         app.post("/api/books", BookController::createBook);

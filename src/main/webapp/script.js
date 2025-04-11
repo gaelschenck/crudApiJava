@@ -1,81 +1,62 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("login-form");
-    const errorMessage = document.getElementById("error-message");
-    const userInfo = document.getElementById("user-info");
-    const logoutBtn = document.getElementById("logout");
+    const token = localStorage.getItem("token");
+    const currentPage = window.location.pathname;
 
-    // Gestion du formulaire de connexion
-    if (form) {
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+    console.log("Page actuelle :", currentPage);
+    console.log("Token présent :", token);
 
-            try {
-                const response = await fetch("http://localhost:5000/api/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.message);
-
-                // Stocker le token et le rôle dans localStorage
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("role", data.role);
-
-                // Redirection en fonction du rôle utilisateur
-                if (data.role === "USER") {
-                    window.location.href = "dashboardUser.html";
-                } else if (data.role === "ADMIN") {
-                    window.location.href = "dashboardAdmin.html";
-                }
-            } catch (error) {
-                errorMessage.textContent = error.message;
-            }
-        });
+    // Gestion de la redirection
+    if (!token && currentPage !== "/index.html") {
+        window.location.href = "index.html";
+        return;
     }
 
-    // Affichage des infos sur le dashboard
-    if (userInfo) {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            window.location.href = "index.html";
-        } else {
-            try {
-                const response = await fetch("http://localhost:5000/api/dashboard", {
-                    method: "GET",
-                    headers: { "Authorization": "Bearer " + token }
-                });
-                const data = await response.json();
-                userInfo.textContent = data.message;
-            } catch (error) {
-                window.location.href = "index.html";
-            }
+    // Page de connexion
+    if (currentPage === "/index.html") {
+        console.log("Page de connexion détectée !");
+        const form = document.getElementById("login-form");
+        if (form) {
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
+                console.log("Tentative de connexion avec :", { email, password });
+
+                const formData = new URLSearchParams();
+                formData.append("email", email);
+                formData.append("password", password);
+
+                try {
+                    const response = await fetch("http://localhost:5000/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: formData.toString()
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        localStorage.setItem("token", data.token);
+                        localStorage.setItem("role", data.role);
+                        console.log("Connexion réussie !");
+                        window.location.href = data.role === "USER" ? "DashboardUser.html" : "DashboardAdmin.html";
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    console.error("Erreur de connexion :", error);
+                    document.getElementById("error-message").textContent = error.message;
+                }
+            });
         }
     }
 
-    // Gestion de la déconnexion
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("role");
+    // Gestion du tableau de bord utilisateur
+    if (currentPage === "/DashboardUser.html" || currentPage === "/DashboardAdmin.html") {
+        if (!token) {
+            console.error("Accès interdit sans connexion !");
             window.location.href = "index.html";
-        });
+            return;
+        }
+        console.log("Page du tableau de bord détectée !");
+        // Vous pouvez ajouter ici les fonctionnalités spécifiques au tableau de bord
     }
-});
-
-// Mise à jour de l'interface en fonction du rôle utilisateur
-document.addEventListener("DOMContentLoaded", () => {
-    const userRole = localStorage.getItem("role");
-
-    // Vérifier le rôle et afficher les boutons en fonction
-    function updateUI() {
-        document.querySelectorAll(".admin-only").forEach(btn => {
-            btn.style.display = userRole === "ADMIN" ? "inline-block" : "none";
-        });
-    }
-
-    updateUI();
 });
