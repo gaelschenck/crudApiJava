@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Livres</title>
+    <title>Gestion des Emprunts</title>
     <link rel="stylesheet" href="bookstyle.css">
 </head>
 <body>
@@ -13,12 +13,15 @@
     </nav>
 </header>
 
-<h2>Ajouter un Livre</h2>
-<form id="book-form">
-    <input type="hidden" id="book-id">
-    <input type="text" id="title" placeholder="Titre" required>
-    <input type="text" id="author" placeholder="Auteur" required>
-    <button type="submit">Enregistrer</button>
+<h2>Liste des Livres</h2>
+<div id="book-list"></div>
+
+<h2>Modifier un Livre</h2>
+<form id="edit-book-form">
+    <input type="hidden" id="edit-book-id">
+    <input type="text" id="edit-title" placeholder="Titre" required>
+    <input type="text" id="edit-author" placeholder="Auteur" required>
+    <button type="submit">Modifier</button>
 </form>
 
 <button id="logout">Déconnexion</button>

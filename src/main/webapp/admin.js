@@ -70,10 +70,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     // 📌 Déconnexion
-    logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("token");
-        window.location.href = "index.html";
-    });
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            localStorage.clear();
+            window.location.href = "index.html";
+        });
+    }
 
     // Charger les données au démarrage
     loadUsers();

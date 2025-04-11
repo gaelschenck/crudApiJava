@@ -27,9 +27,9 @@ public class AdminAPI {
     }
 
     // POST /admin/books → Ajoute un livre au nom de quelqu’un
-    public static String addBookAdmin(User admin, String owner, String title, String author) {
+    public static String addBookAdmin(User admin, String title, String author) {
         if (admin.getRole() != Role.ADMIN) return "Accès refusé.";
-        Book newBook = new Book(bookIdCounter++, title, author, owner);
+        Book newBook = new Book(bookIdCounter++, title, author);
         books.add(newBook);
         return "Livre ajouté par admin : " + newBook;
     }

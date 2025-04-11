@@ -4,13 +4,15 @@ public class Book {
     private int id;
     private String title;
     private String author;
-    private String owner; // L'utilisateur qui a posté le livre
 
-    public Book(int id, String title, String author, String owner) {
+    public Book() {
+        // Constructeur par défaut requis pour la désérialisation
+    }
+
+    public Book(int id, String title, String author) {
         this.id = id;
         this.title = title;
         this.author = author;
-        this.owner = owner;
     }
 
     // Getters et Setters
@@ -38,21 +40,12 @@ public class Book {
         this.author = author;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
     @Override
     public String toString() {
         return "Book{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
-                ", owner=" + owner +
                 '}';
     }
 }

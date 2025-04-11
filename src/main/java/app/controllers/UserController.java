@@ -111,7 +111,18 @@ public class UserController {
         try (Connection conn = DatabaseConnection.getConnection()) {
             Map<String, Object> updatedFields = ctx.bodyAsClass(Map.class); // Récupération des données envoyées dans le corps de la requête.
 
-            // Construire la requête SQL dynamiquement
+            int userIdInRequest = Integer.parseInt(ctx.pathParam("id"));
+            if (userId != userIdInRequest) {
+                ctx.status(403).json("{\"message\": \"Vous ne pouvez modifier que votre propre profil.\"}");
+                return;
+            }
+
+            // Vérifier qu'il y a au moins un champ à mettre à jour
+            if (updatedFields.isEmpty()) {
+                ctx.status(400).json("{\"message\": \"Aucun champ à mettre à jour\"}");
+                return;
+            }
+
             StringBuilder sqlBuilder = new StringBuilder("UPDATE users SET ");
             List<String> columns = new ArrayList<>();
             List<Object> values = new ArrayList<>();
@@ -121,14 +132,9 @@ public class UserController {
                 values.add(value);
             });
 
-            if (columns.isEmpty()) {
-                ctx.status(400).json("{\"message\": \"Aucun champ à mettre à jour\"}");
-                return;
-            }
-
             sqlBuilder.append(String.join(", ", columns));
             sqlBuilder.append(" WHERE id = ?");
-            values.add(userId);
+            values.add(userIdInRequest);
 
             PreparedStatement stmt = conn.prepareStatement(sqlBuilder.toString());
             for (int i = 0; i < values.size(); i++) {

@@ -118,9 +118,8 @@ public class AdminController {
     // Récupérer tous les livres
     public static void getAllBooks(Context ctx) {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT books.id, books.title, books.author, users.name AS owner_name " +
-                    "FROM books " +
-                    "JOIN users ON books.owner = users.id";
+            String sql = "SELECT books.id, books.title, books.author" +
+                    "FROM books";
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 
@@ -129,8 +128,7 @@ public class AdminController {
                 books.add(new Book(
                         rs.getInt("id"),
                         rs.getString("title"),
-                        rs.getString("author"),
-                        rs.getString("owner") // Maintenant on récupère le `name` du propriétaire
+                        rs.getString("author")
                 ));
             }
             ctx.json(books);
@@ -149,7 +147,7 @@ public class AdminController {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("owner_name"));
+                Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"));
                 ctx.json(book);
             } else {
                 ctx.status(404).json("{\"message\": \"Livre introuvable\"}");
@@ -167,11 +165,10 @@ public class AdminController {
             Book updatedBook = ctx.bodyAsClass(Book.class);
 
             // Préparer la requête SQL de mise à jour
-            String sql = "UPDATE books SET title = ?, author = ?, owner_name = ? WHERE id = ?";
+            String sql = "UPDATE books SET title = ?, author = ? WHERE id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, updatedBook.getTitle());
             stmt.setString(2, updatedBook.getAuthor());
-            stmt.setString(3, updatedBook.getOwner());
             stmt.setInt(4, id);
 
             // Exécuter la requête et vérifier si une ligne a été mise à jour

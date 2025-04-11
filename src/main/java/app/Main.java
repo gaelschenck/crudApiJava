@@ -31,12 +31,14 @@ public class Main {
         app.put("/api/admin/books/{id}", BookController::updateBook);
         app.delete("/api/admin/books/{id}", BookController::deleteBook);
 
-// Gestion des utilisateurs par l'admin
+        // Gestion des utilisateurs par l'admin
         app.post("/api/admin/users", AdminController::createUser);
         app.get("/api/admin/users", AdminController::getAllUsers);
         app.get("/api/admin/users/{id}", AdminController::getUserById);
         app.put("/api/admin/users/{id}", AdminController::updateUser);
         app.delete("/api/admin/users/{id}", AdminController::deleteUser);
 
+        // Gestion du compte par un utilisateur non admin
+        app.put("/api/user/{id}/update", UserController::updateUserProfile);
     }
 }
